@@ -3,140 +3,161 @@
 #include <cassert>
 
 // 데이터 얻기
-int CMessage::GetData(char* chpDest, int isize)
+int Serializer::DequeueData(char* chpDest, int isize)
 {
-	// 빼내려는 데이터 크기보다 버퍼 안의 데이터 크기가 작으면 프로그램 중단
-	assert(GetUseDataSize() >= isize);
-	if (GetUseDataSize() < isize) return -1;
+	// 빼내려는 데이터 크기보다 버퍼 안의 데이터 크기가 작으면 로그남기고 종료
+	if (GetUseSize() < isize)
+	{
+		wprintf(L"GetData Error ( GetDataSize > GetUseSize )\n");
+		return -1;
+	}
 
 	memcpy(chpDest, GetReadPtr(), isize);
 	MoveReadPos(isize);
 
+	//넣은 데이터 크기만큼 반환
 	return isize;
 }
 
 // 데이터 삽입 ( 가변 크기 때문에 문자열과 문자열의 복사는 memcpy를 사용해야 됨 )
 // 헤더 삽입에도 사용
-int CMessage::PutData(char* chpSrc, int isize)
+int Serializer::EnqueueData(char* chpSrc, int isize)
 {
-	// 버퍼 사이즈를 초과하면 함수 종료
-	assert(isize + GetUseDataSize() <= buffer_size);
-	if (GetUseDataSize() + isize > buffer_size) return -1;
+	// 데이터를 저장했을 때 버퍼의 크기를 넘어서면 로그 남기고 함수 종료
+	if (GetUseSize() + isize > buffer_size)
+	{
+		wprintf(L"EnqueueData Error ( GetUseSize() + isize > buffer_size )\n");
+		return -1;
+	}
 
 	memcpy(GetWritePtr(), chpSrc, isize);
 	MoveWritePos(isize);
 
+	// 넣은 데이터 크기만큼 반환
 	return isize;
 }
 
-CMessage& CMessage::operator << (unsigned char uchvalue)
+Serializer& Serializer::operator << (unsigned char uchvalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(unsigned char) <= buffer_size);
+	// 버퍼에 넣을 공간이 있으면 통과!
+	if (GetUseSize() + sizeof(unsigned char) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(unsigned char) > buffer_size)\n");
+		return;
+	}
 
+	// 데이터를 복사하지 않고 직접 포인터에 값을 저장 후에 rearpos 위치 옮김
 	*(unsigned char*)GetWritePtr() = uchvalue;
-
-	//memcpy(GetWritePtr(), &uchvalue, sizeof(unsigned char));
 	MoveWritePos(sizeof(unsigned char));
 
+	// 연산자 오버로딩을 연속적으로 사용할 수 있게 객체 자신을 반환
 	return *this;
 }
 
-CMessage& CMessage::operator << (char chvalue)
+Serializer& Serializer::operator << (char chvalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(char) <= buffer_size);
+	if (GetUseSize() + sizeof(char) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(char) > buffer_size)\n");
+		return;
+	}
 
-	*GetWritePtr() = chvalue;
-
-	//memcpy(GetWritePtr(), &chvalue, sizeof(char));
+	*(char*)GetWritePtr() = chvalue;
 	MoveWritePos(sizeof(char));
 
 	return *this;
 }
 
-CMessage& CMessage::operator << (unsigned short ushvalue)
+Serializer& Serializer::operator << (unsigned short ushvalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(unsigned short) <= buffer_size);
+	if (GetUseSize() + sizeof(unsigned short) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(unsigned short) > buffer_size)\n");
+		return;
+	}
 
+	// GetWritePtr의 반환형이 char*이기 때문에 short의 값을 온전하게 넣기 위해서 반환되는 값에다 포인터 캐스팅으로 바라봐야 한다. 
 	*(unsigned short*)GetWritePtr() = ushvalue;
-
-	//memcpy(GetWritePtr(), &ushvalue, sizeof(unsigned short));
 	MoveWritePos(sizeof(unsigned short));
 
 	return *this;
 }
-CMessage& CMessage::operator << (short shvalue)
+Serializer& Serializer::operator << (short shvalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(short) <= buffer_size);
+	if (GetUseSize() + sizeof(short) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(short) > buffer_size)\n");
+		return;
+	}
 
 	*(short*)GetWritePtr() = shvalue;
-
-	//memcpy(GetWritePtr(), &shvalue, sizeof(short));
 	MoveWritePos(sizeof(short));
 
 	return *this;
 }
 
-CMessage& CMessage::operator << (int ivalue)
+Serializer& Serializer::operator << (int ivalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(int) <= buffer_size);
+	if (GetUseSize() + sizeof(int) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(int) > buffer_size)\n");
+		return;
+	}
 
 	*(int*)GetWritePtr() = ivalue;
-
-	//memcpy(GetWritePtr(), &ivalue, sizeof(int));
 	MoveWritePos(sizeof(int));
 
 	return *this;
 }
-CMessage& CMessage::operator << (long lvalue)
+Serializer& Serializer::operator << (long lvalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(long) <= buffer_size);
+	if (GetUseSize() + sizeof(long) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(long) > buffer_size)\n");
+		return;
+	}
 
 	*(long*)GetWritePtr() = lvalue;
-
-	//memcpy(GetWritePtr(), &lvalue, sizeof(long));
 	MoveWritePos(sizeof(long));
 
 	return *this;
 }
-CMessage& CMessage::operator << (float fvalue)
+Serializer& Serializer::operator << (float fvalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(float) <= buffer_size);
+	if (GetUseSize() + sizeof(float) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(float) > buffer_size)\n");
+		return;
+	}
 
 	*(float*)GetWritePtr() = fvalue;
-	
-	//memcpy(GetWritePtr(), &fvalue, sizeof(float));
 	MoveWritePos(sizeof(float));
 
 	return *this;
 }
 
-CMessage& CMessage::operator << (__int64 __ivalue)
+Serializer& Serializer::operator << (__int64 __ivalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(__int64) <= buffer_size);
+	if (GetUseSize() + sizeof(__int64) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(__int64) > buffer_size)\n");
+		return;
+	}
 
 	*(__int64*)GetWritePtr() = __ivalue;
-
-	//memcpy(GetWritePtr(), &__ivalue, sizeof(__int64));
 	MoveWritePos(sizeof(__int64));
 
 	return *this;
 }
-CMessage& CMessage::operator << (double dvalue)
+Serializer& Serializer::operator << (double dvalue)
 {
-	// 버퍼에 넣을 공간이 있으면 통과! 없으면 프로그램 중단
-	assert(GetUseDataSize() + sizeof(double) <= buffer_size);
+	if (GetUseSize() + sizeof(double) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(double) > buffer_size)\n");
+		return;
+	}
 
 	*(double*)GetWritePtr() = dvalue;
-
-	//memcpy(GetWritePtr(), &dvalue, sizeof(double));
 	MoveWritePos(sizeof(double));
 
 	return *this;

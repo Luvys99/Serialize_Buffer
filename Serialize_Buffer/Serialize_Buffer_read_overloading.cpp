@@ -3,10 +3,16 @@
 #include <cassert>
 
 
-CMessage& CMessage::operator >> (unsigned char& uchvalue)
+Serializer& Serializer::operator >> (unsigned char& uchvalue)
 {
-	assert(GetUseDataSize() >= sizeof(unsigned char));
+	// 언직렬화 하려는 데이터의 크기보다 버퍼 내의 데이터 크기가 작을 때 로그남기고 종료
+	if (GetUseSize() < sizeof(unsigned char))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(unsigned char) )\n");
+		return;
+	}
 
+	// 여기 역시 읽어올 버퍼의 주소에다가 포인터 캐스팅을 통해서 바라보는 자료형 크기만큼 값을 변수에 저장
 	uchvalue = *(unsigned char*)GetReadPtr();
 	MoveReadPos(sizeof(unsigned char));
 
@@ -14,9 +20,13 @@ CMessage& CMessage::operator >> (unsigned char& uchvalue)
 
 }
 
-CMessage& CMessage::operator >> (char& chvalue)
+Serializer& Serializer::operator >> (char& chvalue)
 {
-	assert(GetUseDataSize() >= sizeof(char));
+	if (GetUseSize() < sizeof(char))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(char) )\n");
+		return;
+	}
 
 	chvalue = *(char*)GetReadPtr();
 	MoveReadPos(sizeof(char));
@@ -25,9 +35,13 @@ CMessage& CMessage::operator >> (char& chvalue)
 
 }
 
-CMessage& CMessage::operator >> (unsigned short& ushvalue)
+Serializer& Serializer::operator >> (unsigned short& ushvalue)
 {
-	assert(GetUseDataSize() >= sizeof(unsigned short));
+	if (GetUseSize() < sizeof(unsigned short))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(unsigned short) )\n");
+		return;
+	}
 
 	ushvalue = *(unsigned short*)GetReadPtr();
 	MoveReadPos(sizeof(unsigned short));
@@ -35,9 +49,13 @@ CMessage& CMessage::operator >> (unsigned short& ushvalue)
 	return *this;
 }
 
-CMessage& CMessage::operator >> (short& shvalue)
+Serializer& Serializer::operator >> (short& shvalue)
 {
-	assert(GetUseDataSize() >= sizeof(short));
+	if (GetUseSize() < sizeof(short))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(short) )\n");
+		return;
+	}
 
 	shvalue = *(short*)GetReadPtr();
 	MoveReadPos(sizeof(short));
@@ -45,9 +63,13 @@ CMessage& CMessage::operator >> (short& shvalue)
 	return *this;
 }
 
-CMessage& CMessage::operator >> (int& ivalue)
+Serializer& Serializer::operator >> (int& ivalue)
 {
-	assert(GetUseDataSize() >= sizeof(int));
+	if (GetUseSize() < sizeof(int))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(int) )\n");
+		return;
+	}
 
 	ivalue = *(int*)GetReadPtr();
 	MoveReadPos(sizeof(int));
@@ -55,9 +77,13 @@ CMessage& CMessage::operator >> (int& ivalue)
 	return *this;
 }
 
-CMessage& CMessage::operator >> (long& lvalue)
+Serializer& Serializer::operator >> (long& lvalue)
 {
-	assert(GetUseDataSize() >= sizeof(long));
+	if (GetUseSize() < sizeof(long))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(long) )\n");
+		return;
+	}
 
 	lvalue = *(long*)GetReadPtr();
 	MoveReadPos(sizeof(long));
@@ -65,9 +91,13 @@ CMessage& CMessage::operator >> (long& lvalue)
 	return *this;
 }
 
-CMessage& CMessage::operator >> (float& fvalue)
+Serializer& Serializer::operator >> (float& fvalue)
 {
-	assert(GetUseDataSize() >= sizeof(float));
+	if (GetUseSize() < sizeof(float))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(float) )\n");
+		return;
+	}
 
 	fvalue = *(float*)GetReadPtr();
 	MoveReadPos(sizeof(float));
@@ -75,9 +105,13 @@ CMessage& CMessage::operator >> (float& fvalue)
 	return *this;
 }
 
-CMessage& CMessage::operator >> (__int64& __ivalue)
+Serializer& Serializer::operator >> (__int64& __ivalue)
 {
-	assert(GetUseDataSize() >= sizeof(__int64));
+	if (GetUseSize() < sizeof(__int64))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(__int64) )\n");
+		return;
+	}
 
 	__ivalue = *(__int64*)GetReadPtr();
 	MoveReadPos(sizeof(__int64));
@@ -85,9 +119,13 @@ CMessage& CMessage::operator >> (__int64& __ivalue)
 	return *this;
 }
 
-CMessage& CMessage::operator >> (double& dvalue)
+Serializer& Serializer::operator >> (double& dvalue)
 {
-	assert(GetUseDataSize() >= sizeof(double));
+	if (GetUseSize() < sizeof(double))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(double) )\n");
+		return;
+	}
 
 	dvalue = *(double*)GetReadPtr();
 	MoveReadPos(sizeof(double));
