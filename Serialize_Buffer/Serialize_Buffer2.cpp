@@ -39,11 +39,15 @@ int Serializer::EnqueueData(char* chpSrc, int isize)
 
 Serializer& Serializer::operator << (unsigned char uchvalue)
 {
+	// 이전 오버로딩함수에서 에러가 발생했었다면? 아무것도 안하고 종료
+	if (error_flag == true) { return *this; }
+
 	// 버퍼에 넣을 공간이 있으면 통과!
 	if (GetUseSize() + sizeof(unsigned char) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(unsigned char) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	// 데이터를 복사하지 않고 직접 포인터에 값을 저장 후에 rearpos 위치 옮김
@@ -56,10 +60,13 @@ Serializer& Serializer::operator << (unsigned char uchvalue)
 
 Serializer& Serializer::operator << (char chvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(char) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(char) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(char*)GetWritePtr() = chvalue;
@@ -70,10 +77,13 @@ Serializer& Serializer::operator << (char chvalue)
 
 Serializer& Serializer::operator << (unsigned short ushvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(unsigned short) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(unsigned short) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	// GetWritePtr의 반환형이 char*이기 때문에 short의 값을 온전하게 넣기 위해서 반환되는 값에다 포인터 캐스팅으로 바라봐야 한다. 
@@ -84,10 +94,13 @@ Serializer& Serializer::operator << (unsigned short ushvalue)
 }
 Serializer& Serializer::operator << (short shvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(short) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(short) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(short*)GetWritePtr() = shvalue;
@@ -98,10 +111,13 @@ Serializer& Serializer::operator << (short shvalue)
 
 Serializer& Serializer::operator << (unsigned int ivalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(unsigned int) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(unsigned int) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(unsigned int*)GetWritePtr() = ivalue;
@@ -112,10 +128,13 @@ Serializer& Serializer::operator << (unsigned int ivalue)
 
 Serializer& Serializer::operator << (int ivalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(int) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(int) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(int*)GetWritePtr() = ivalue;
@@ -125,10 +144,13 @@ Serializer& Serializer::operator << (int ivalue)
 }
 Serializer& Serializer::operator << (long lvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(long) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(long) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(long*)GetWritePtr() = lvalue;
@@ -138,10 +160,13 @@ Serializer& Serializer::operator << (long lvalue)
 }
 Serializer& Serializer::operator << (float fvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(float) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(float) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(float*)GetWritePtr() = fvalue;
@@ -152,10 +177,13 @@ Serializer& Serializer::operator << (float fvalue)
 
 Serializer& Serializer::operator << (__int64 __ivalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(__int64) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(__int64) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(__int64*)GetWritePtr() = __ivalue;
@@ -165,10 +193,13 @@ Serializer& Serializer::operator << (__int64 __ivalue)
 }
 Serializer& Serializer::operator << (double dvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() + sizeof(double) > buffer_size)
 	{
 		wprintf(L"operator << error ( GetUseSize() + sizeof(double) > buffer_size)\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	*(double*)GetWritePtr() = dvalue;

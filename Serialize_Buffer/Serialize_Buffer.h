@@ -18,8 +18,11 @@ private:
 	int rear;
 	int front;
 
+	bool error_flag; // 에러가 발생하면 프래그를 켜놓고 오버로딩 함수들이 작동되지 않도록
+					 // 오버로딩 *this 구조로 인해서 연속적으로 호출되는 함수까지는 문제없이 호출되도록 아무동작만 하지 않게 *this만 리턴되게끔함 
+
 public:
-	Serializer() : buffer_size(BUFFER_DEFAULT), use_size(0), rear(0), front(0)
+	Serializer() : buffer_size(BUFFER_DEFAULT), use_size(0), rear(0), front(0), error_flag(false)
 	{
 		s_buffer = new char[BUFFER_DEFAULT];
 		if (s_buffer == nullptr)
@@ -28,7 +31,7 @@ public:
 			return;
 		}
 	}
-	Serializer(int size) : buffer_size(size), use_size(0), rear(0), front(0)
+	Serializer(int size) : buffer_size(size), use_size(0), rear(0), front(0), error_flag(false)
 	{
 		s_buffer = new char[size];
 		if (s_buffer == nullptr)

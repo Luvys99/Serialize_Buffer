@@ -5,11 +5,15 @@
 
 Serializer& Serializer::operator >> (unsigned char& uchvalue)
 {
+	// 이전 오버로딩함수에서 에러가 발생했었다면? 아무것도 안하고 종료
+	if (error_flag == true) { return *this; }
+
 	// 언직렬화 하려는 데이터의 크기보다 버퍼 내의 데이터 크기가 작을 때 로그남기고 종료
 	if (GetUseSize() < sizeof(unsigned char))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(unsigned char) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	// 여기 역시 읽어올 버퍼의 주소에다가 포인터 캐스팅을 통해서 바라보는 자료형 크기만큼 값을 변수에 저장
@@ -22,10 +26,13 @@ Serializer& Serializer::operator >> (unsigned char& uchvalue)
 
 Serializer& Serializer::operator >> (char& chvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(char))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(char) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	chvalue = *(char*)GetReadPtr();
@@ -37,10 +44,13 @@ Serializer& Serializer::operator >> (char& chvalue)
 
 Serializer& Serializer::operator >> (unsigned short& ushvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(unsigned short))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(unsigned short) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	ushvalue = *(unsigned short*)GetReadPtr();
@@ -51,10 +61,13 @@ Serializer& Serializer::operator >> (unsigned short& ushvalue)
 
 Serializer& Serializer::operator >> (short& shvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(short))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(short) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	shvalue = *(short*)GetReadPtr();
@@ -65,10 +78,13 @@ Serializer& Serializer::operator >> (short& shvalue)
 
 Serializer& Serializer::operator >> (unsigned int ivalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(unsigned int))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(unsigned int) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	ivalue = *(unsigned int*)GetReadPtr();
@@ -79,10 +95,13 @@ Serializer& Serializer::operator >> (unsigned int ivalue)
 
 Serializer& Serializer::operator >> (int& ivalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(int))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(int) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	ivalue = *(int*)GetReadPtr();
@@ -93,10 +112,13 @@ Serializer& Serializer::operator >> (int& ivalue)
 
 Serializer& Serializer::operator >> (long& lvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(long))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(long) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	lvalue = *(long*)GetReadPtr();
@@ -107,10 +129,13 @@ Serializer& Serializer::operator >> (long& lvalue)
 
 Serializer& Serializer::operator >> (float& fvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(float))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(float) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	fvalue = *(float*)GetReadPtr();
@@ -121,10 +146,13 @@ Serializer& Serializer::operator >> (float& fvalue)
 
 Serializer& Serializer::operator >> (__int64& __ivalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(__int64))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(__int64) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	__ivalue = *(__int64*)GetReadPtr();
@@ -135,10 +163,13 @@ Serializer& Serializer::operator >> (__int64& __ivalue)
 
 Serializer& Serializer::operator >> (double& dvalue)
 {
+	if (error_flag == true) { return *this; }
+
 	if (GetUseSize() < sizeof(double))
 	{
 		wprintf(L"operator >> error ( GetUseSize() < sizeof(double) )\n");
-		return;
+		error_flag = true;
+		return *this;
 	}
 
 	dvalue = *(double*)GetReadPtr();
