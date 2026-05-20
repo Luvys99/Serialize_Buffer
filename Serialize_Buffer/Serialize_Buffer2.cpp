@@ -96,6 +96,20 @@ Serializer& Serializer::operator << (short shvalue)
 	return *this;
 }
 
+Serializer& Serializer::operator << (unsigned int ivalue)
+{
+	if (GetUseSize() + sizeof(unsigned int) > buffer_size)
+	{
+		wprintf(L"operator << error ( GetUseSize() + sizeof(unsigned int) > buffer_size)\n");
+		return;
+	}
+
+	*(unsigned int*)GetWritePtr() = ivalue;
+	MoveWritePos(sizeof(unsigned int));
+
+	return *this;
+}
+
 Serializer& Serializer::operator << (int ivalue)
 {
 	if (GetUseSize() + sizeof(int) > buffer_size)

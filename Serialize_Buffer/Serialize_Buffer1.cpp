@@ -63,6 +63,20 @@ Serializer& Serializer::operator >> (short& shvalue)
 	return *this;
 }
 
+Serializer& Serializer::operator >> (unsigned int ivalue)
+{
+	if (GetUseSize() < sizeof(unsigned int))
+	{
+		wprintf(L"operator >> error ( GetUseSize() < sizeof(unsigned int) )\n");
+		return;
+	}
+
+	ivalue = *(unsigned int*)GetReadPtr();
+	MoveReadPos(sizeof(unsigned int));
+
+	return *this;
+}
+
 Serializer& Serializer::operator >> (int& ivalue)
 {
 	if (GetUseSize() < sizeof(int))

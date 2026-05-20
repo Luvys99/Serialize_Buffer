@@ -82,8 +82,10 @@ public:
 	Serializer& operator << (short shvalue);
 
 	Serializer& operator << (int ivalue);
-	Serializer& operator << (long lvalue);
-	Serializer& operator << (float fvalue);
+	Serializer& operator << (unsigned int ivalue);
+
+	Serializer& operator << (long lvalue); // 운영체제에 따라 값이 들쭉 날쭉해서 unsinged long X
+	Serializer& operator << (float fvalue); // 실수는 부호 비트가 무조건 1칸 할당되어 있어서 unsigned가 없음
 
 	Serializer& operator << (__int64 __ivalue);
 	Serializer& operator << (double dvalue);
@@ -95,7 +97,9 @@ public:
 	Serializer& operator >> (unsigned short& ushvalue);
 	Serializer& operator >> (short& shvalue);
 
+	Serializer& operator >> (unsigned int ivalue);
 	Serializer& operator >> (int& ivalue);
+
 	Serializer& operator >> (long& lvalue);
 	Serializer& operator >> (float& fvalue);
 
