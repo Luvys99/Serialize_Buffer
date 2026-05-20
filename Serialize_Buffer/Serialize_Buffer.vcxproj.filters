@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Serialize_Buffer_write_overloading.cpp">
+    <ClCompile Include="Serialize_Buffer2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Serialize_Buffer_read_overloading.cpp">
+    <ClCompile Include="Serialize_Buffer1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
